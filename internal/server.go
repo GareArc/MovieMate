@@ -8,12 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/GareArc/MovieMate/internal/config"
+	"github.com/GareArc/MovieMate/internal/db"
 )
-
-func initConfig() {
-	log.Println("Initializing config")
-	config.Init()
-}
 
 func initServer() {
 	// Create a new server
@@ -34,6 +30,7 @@ func initServer() {
 }
 
 func Run() {
-	initConfig()
+	config.InitConfig()
+	db.InitDB()
 	initServer()
 }
