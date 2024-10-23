@@ -23,6 +23,7 @@ WORKDIR /app
 COPY --from=build /app/main ./
 COPY --from=build /app/env.yaml.example ./env.yaml
 COPY --from=build /app/docker/entrypoint.sh ./
+COPY --from=build /app/static ./static
 
 RUN chmod +x ./entrypoint.sh
 

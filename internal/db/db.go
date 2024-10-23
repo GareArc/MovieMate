@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -11,20 +10,22 @@ import (
 	"gorm.io/gorm/logger"
 
 	"github.com/GareArc/MovieMate/internal/config"
+	"github.com/GareArc/MovieMate/internal/type/model"
 )
 
 var (
-	MainDB *sql.DB
+	MainDB *gorm.DB
 )
 
 func InitDB() error {
+	config := config.GetStaticConfig()
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=postgres port=%s sslmode=%s TimeZone=%s",
-		config.MainConfig.String("db.host"),
-		config.MainConfig.String("db.user"),
-		config.MainConfig.String("db.password"),
-		config.MainConfig.String("db.port"),
-		config.MainConfig.String("db.ssl"),
-		config.MainConfig.String("db.timezone"))
+		config.String("db.host"),
+		config.String("db.user"),
+		config.String("db.password"),
+		config.String("db.port"),
+		config.String("db.ssl"),
+		config.String("db.timezone"))
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -35,14 +36,14 @@ func InitDB() error {
 	}
 
 	// check if dbname exists
-	rows, err := postgresDB.Query("SELECT 1 FROM pg_database WHERE datname = $1", config.MainConfig.String("db.dbname"))
+	rows, err := postgresDB.Query("SELECT 1 FROM pg_database WHERE datname = $1", config.String("db.dbname"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if !rows.Next() {
 		// create dbname
-		_, err := postgresDB.Exec(fmt.Sprintf("CREATE DATABASE %s", config.MainConfig.String("db.dbname")))
+		_, err := postgresDB.Exec(fmt.Sprintf("CREATE DATABASE %s", config.String("db.dbname")))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -51,16 +52,16 @@ func InitDB() error {
 
 	// reconnect to dbname
 	dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		config.MainConfig.String("db.host"),
-		config.MainConfig.String("db.user"),
-		config.MainConfig.String("db.password"),
-		config.MainConfig.String("db.dbname"),
-		config.MainConfig.String("db.port"),
-		config.MainConfig.String("db.ssl"),
-		config.MainConfig.String("db.timezone"))
+		config.String("db.host"),
+		config.String("db.user"),
+		config.String("db.password"),
+		config.String("db.dbname"),
+		config.String("db.port"),
+		config.String("db.ssl"),
+		config.String("db.timezone"))
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -89,7 +90,25 @@ func InitDB() error {
 	postgresDB.SetMaxOpenConns(100)
 	postgresDB.SetConnMaxLifetime(time.Hour)
 
-	MainDB = postgresDB
+	// Migrate the schema
+	db.AutoMigrate()
+
+	MainDB = db
+
+	return nil
+}
+
+func Migrate() error {
+	// Migrate the schemas
+	MainDB.AutoMigrate(
+		&model.User{},
+		&model.Movie{},
+		&model.Theater{},
+		&model.Seat{},
+		&model.MoiveSchedule{},
+		&model.Ticket{},
+		&model.TicketPurchase{},
+	)
 
 	return nil
 }

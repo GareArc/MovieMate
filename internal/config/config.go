@@ -11,17 +11,21 @@ import (
 )
 
 var (
-	MainConfig *koanf.Koanf = koanf.New(".")
+	main_config *koanf.Koanf = koanf.New(".")
 )
+
+func GetStaticConfig() *koanf.Koanf {
+	return main_config
+}
 
 func InitConfig() {
 	// Load from yaml file
-	if err := MainConfig.Load(file.Provider("env.yaml"), yaml.Parser()); err != nil {
+	if err := main_config.Load(file.Provider("env.yaml"), yaml.Parser()); err != nil {
 		log.Fatalf("error loading config: %v", err)
 	}
 
 	// Load from EV
-	if err := MainConfig.Load(env.Provider("", ".", func(s string) string {
+	if err := main_config.Load(env.Provider("", ".", func(s string) string {
 		return strings.ToLower(strings.ReplaceAll(s, "_", "."))
 	}), nil); err != nil {
 		log.Fatalf("error loading config: %v", err)

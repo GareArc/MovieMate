@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Model struct {
+type BaseModel struct {
 	ID        string `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

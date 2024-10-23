@@ -12,6 +12,7 @@ import (
 )
 
 func initServer() {
+	config := config.GetStaticConfig()
 	// Create a new server
 	r := gin.Default()
 
@@ -23,14 +24,25 @@ func initServer() {
 	// TODO: Add middilewares
 
 	// TODO: Add routes
-	log.Printf("Server starting at %s:%d", config.MainConfig.String("server.host"), config.MainConfig.Int("server.port"))
-	if err := r.Run(fmt.Sprintf("%s:%d", config.MainConfig.String("server.host"), config.MainConfig.Int("server.port"))); err != nil {
+	log.Printf("Server starting at %s:%d", config.String("server.host"), config.Int("server.port"))
+	if err := r.Run(fmt.Sprintf("%s:%d", config.String("server.host"), config.Int("server.port"))); err != nil {
 		log.Fatalf("error in server: %v", err)
+	}
+}
+
+func initDatabase() {
+	db.InitDB()
+	enable_migrate := config.GetStaticConfig().Bool("db.migrate")
+	if enable_migrate {
+		err := db.Migrate()
+		if err != nil {
+			log.Fatalf("error in migratation: %v", err)
+		}
 	}
 }
 
 func Run() {
 	config.InitConfig()
-	db.InitDB()
+	initDatabase()
 	initServer()
 }
