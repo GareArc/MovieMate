@@ -4,16 +4,15 @@ import (
 	bcrypt "golang.org/x/crypto/bcrypt"
 )
 
-func HashSaltedPassword(pass string) (string, string, error) {
-	salt := GenerateRandomString(16)
-	hash, err := bcrypt.GenerateFromPassword([]byte(pass+salt), bcrypt.DefaultCost)
-	return string(hash), salt, err
+func HashSaltedPassword(pass string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	return string(hash), err
 }
 
-func VerifySaltedPassword(pass string, salt string, passHash string) (bool, error) {
-	hash, ok := bcrypt.GenerateFromPassword([]byte(pass+salt), bcrypt.DefaultCost)
+func VerifySaltedPassword(pass string, passHash string) (bool, error) {
+	ok := bcrypt.CompareHashAndPassword([]byte(passHash), []byte(pass))
 	if ok != nil {
 		return false, ok
 	}
-	return string(hash) == passHash, nil
+	return true, nil
 }

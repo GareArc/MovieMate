@@ -33,12 +33,12 @@ func Login(email string, password string) (string, *model.User, error) {
 	return jwt_token, &user, nil
 }
 
-func Register(email string, password string, nickname string) (*model.User, string, error) {
+func Register(email string, password string, nickname string) (string, *model.User, error) {
 	var user model.User
 	db.MainDB.Model(&model.User{}).Where("email = ?", email).First(&user)
 
 	if user.ID != "" {
-		return nil, "", errors.New("user with the same email already exists")
+		return "", nil, errors.New("user with the same email already exists")
 	}
 
 	user = model.User{
@@ -52,5 +52,5 @@ func Register(email string, password string, nickname string) (*model.User, stri
 
 	jwt_token, err := utils.JWTCreateToken(user.ID)
 
-	return &user, jwt_token, err
+	return jwt_token, &user, err
 }

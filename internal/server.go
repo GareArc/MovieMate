@@ -3,12 +3,12 @@ package internal
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/GareArc/MovieMate/internal/config"
 	"github.com/GareArc/MovieMate/internal/db"
+	"github.com/GareArc/MovieMate/internal/router"
 )
 
 func initServer() {
@@ -16,14 +16,11 @@ func initServer() {
 	// Create a new server
 	r := gin.Default()
 
-	// Add a handler for the root page
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello, World!")
-	})
-
-	// TODO: Add middilewares
+	// TODO: Add global middilewares
 
 	// TODO: Add routes
+	router.Router(r)
+
 	log.Printf("Server starting at %s:%d", config.String("server.host"), config.Int("server.port"))
 	if err := r.Run(fmt.Sprintf("%s:%d", config.String("server.host"), config.Int("server.port"))); err != nil {
 		log.Fatalf("error in server: %v", err)
