@@ -16,7 +16,7 @@ type User struct {
 
 func (u *User) VerifyPassword(givenPass string) (bool, error) {
 	hashedPass := u.Password
-	res, ok := utils.VerifySaltedPassword(givenPass, hashedPass)
+	res, ok := utils.VerifyPassword(givenPass, hashedPass)
 	if ok != nil {
 		return false, errors.New("password not match")
 	}
@@ -24,7 +24,7 @@ func (u *User) VerifyPassword(givenPass string) (bool, error) {
 }
 
 func (u *User) SetPassword(pass string) error {
-	hashedPass, err := utils.HashSaltedPassword(pass)
+	hashedPass, err := utils.HashSaltPassword(pass)
 	if err != nil {
 		return err
 	}

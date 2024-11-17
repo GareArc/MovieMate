@@ -90,9 +90,6 @@ func InitDB() error {
 	postgresDB.SetMaxOpenConns(100)
 	postgresDB.SetConnMaxLifetime(time.Hour)
 
-	// Migrate the schema
-	db.AutoMigrate()
-
 	MainDB = db
 
 	return nil

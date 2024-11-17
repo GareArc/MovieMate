@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/GareArc/MovieMate/internal/service"
+	"github.com/GareArc/MovieMate/internal/type/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,19 @@ type UserReturnBody struct {
 	Email    string `json:"email"`
 	Nickname string `json:"nickname"`
 	Avatar   string `json:"avatar"`
+}
+
+func CheckActiveUser(c *gin.Context) {
+	// assume user is in context
+	user := c.MustGet("current_user").(model.User)
+	c.JSON(200, gin.H{
+		"user": &UserReturnBody{
+			ID:       user.ID,
+			Email:    user.Email,
+			Nickname: user.Nickname,
+			Avatar:   user.Avatar,
+		},
+	})
 }
 
 func LoginUser(c *gin.Context) {
