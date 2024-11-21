@@ -8,7 +8,9 @@ import (
 	"github.com/GareArc/MovieMate/internal/utils"
 )
 
-func Login(email string, password string) (string, *model.User, error) {
+type AuthService struct{}
+
+func (as *AuthService) Login(email string, password string) (string, *model.User, error) {
 	var user model.User
 	db.MainDB.Model(&model.User{}).Where("email = ?", email).First(&user)
 
@@ -33,7 +35,7 @@ func Login(email string, password string) (string, *model.User, error) {
 	return jwt_token, &user, nil
 }
 
-func Register(email string, password string, nickname string) (string, *model.User, error) {
+func (as *AuthService) Register(email string, password string, nickname string) (string, *model.User, error) {
 	var user model.User
 	db.MainDB.Model(&model.User{}).Where("email = ?", email).First(&user)
 

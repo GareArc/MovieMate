@@ -1,4 +1,4 @@
-package user_controller
+package controller
 
 import (
 	"net/http"
@@ -21,7 +21,9 @@ type UserReturnBody struct {
 	Avatar   string `json:"avatar"`
 }
 
-func CheckActiveUser(c *gin.Context) {
+type UserController struct{}
+
+func (uc *UserController) CheckActiveUser(c *gin.Context) {
 	// assume user is in context
 	user := c.MustGet("current_user").(model.User)
 	c.JSON(200, gin.H{
@@ -34,14 +36,15 @@ func CheckActiveUser(c *gin.Context) {
 	})
 }
 
-func LoginUser(c *gin.Context) {
+func (uc *UserController) LoginUser(c *gin.Context) {
 	var req UserAuthBody
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	jwt_token, user, err := service.Login(req.Email, req.Password)
+	user_service := service.AuthService{}
+	jwt_token, user, err := user_service.Login(req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,7 +62,7 @@ func LoginUser(c *gin.Context) {
 
 }
 
-func RegisterUser(c *gin.Context) {
+func (uc *UserController) RegisterUser(c *gin.Context) {
 	var req UserAuthBody
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -70,7 +73,8 @@ func RegisterUser(c *gin.Context) {
 		req.Nickname = "TBD"
 	}
 
-	jwt_token, user, err := service.Register(req.Email, req.Password, req.Nickname)
+	user_service := service.AuthService{}
+	jwt_token, user, err := user_service.Register(req.Email, req.Password, req.Nickname)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
