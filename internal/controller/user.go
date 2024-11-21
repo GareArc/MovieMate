@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/GareArc/MovieMate/internal/service"
-	"github.com/GareArc/MovieMate/internal/type/model"
+	"github.com/GareArc/MovieMate/internal/types/model"
 	"github.com/gin-gonic/gin"
 )
 

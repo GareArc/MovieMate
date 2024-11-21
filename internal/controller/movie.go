@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/GareArc/MovieMate/internal/service"
@@ -14,7 +13,7 @@ func (mc *MovieController) GetMovieInfo(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "id field is reqired",
+			"message": "field id is reqired",
 		})
 		return
 	}
@@ -23,10 +22,25 @@ func (mc *MovieController) GetMovieInfo(c *gin.Context) {
 	movie, err := movie_service.GetMovieInfoById(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"message": fmt.Sprintf("error during processing the movie"),
+			"message": "error during processing the movie",
+		})
+		return
+}
+
+	c.JSON(http.StatusOK, movie)
+}
+
+func (mc *MovieController) GetShowTimes(c *gin.Context) {
+	id := c.Query("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "field id is required",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, movie)
+	movie_service := service.MovieService{}
+	showtime := movie_service.GetShowTimeListById(id)
+
+	c.JSON(http.StatusOK, showtime)
 }

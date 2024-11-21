@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm/logger"
 
 	"github.com/GareArc/MovieMate/internal/config"
-	"github.com/GareArc/MovieMate/internal/type/model"
+	"github.com/GareArc/MovieMate/internal/types/model"
 )
 
 var (
@@ -102,7 +102,7 @@ func Migrate() error {
 		&model.Movie{},
 		&model.Theater{},
 		&model.Seat{},
-		&model.MoiveSchedule{},
+		&model.MovieSchedule{},
 		&model.Ticket{},
 		&model.TicketPurchase{},
 	)

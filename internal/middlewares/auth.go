@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/GareArc/MovieMate/internal/db"
-	"github.com/GareArc/MovieMate/internal/type/model"
+	"github.com/GareArc/MovieMate/internal/types/model"
 	"github.com/GareArc/MovieMate/internal/utils"
 )
 

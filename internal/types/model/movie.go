@@ -25,7 +25,7 @@ type Movie struct {
 	Class             ClassAllowed `gorm:"column:class;length:255;default:'all_ages'"`
 }
 
-type MoiveSchedule struct {
+type MovieSchedule struct {
 	BaseModel
 	MovieID   int       `gorm:"column:movie_id;not null"`
 	TheaterID int       `gorm:"column:theater_id;not null"`

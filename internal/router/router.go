@@ -11,12 +11,12 @@ import (
 
 func Router(r *gin.Engine) {
 	healthCheckRouter(r)
-	v1_api := VersionRouterHead(r, "v1")
+	v1_api := versionRouterHead(r, "v1")
 	initUserRouter(v1_api)
 	initMovieRouter(v1_api)
 }
 
-func VersionRouterHead(r *gin.Engine, version string) *gin.RouterGroup {
+func versionRouterHead(r *gin.Engine, version string) *gin.RouterGroup {
 	return r.Group(fmt.Sprintf("/api/%s", version))
 }
 
@@ -43,4 +43,5 @@ func initMovieRouter(r *gin.RouterGroup) {
 	movie_controller := controller.MovieController{}
 
 	MovieGroup.GET("/", movie_controller.GetMovieInfo)
+	MovieGroup.GET("/showtime", movie_controller.GetShowTimes)
 }
